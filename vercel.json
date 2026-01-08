@@ -1,6 +1,1 @@
-{
-  "rewrites": [
-    { "source": "/api/webhook/complete-sales", "destination": "/api/webhook/complete-sales.js" },
-    { "source": "/api/webhook/complete", "destination": "/api/webhook/complete.js" }
-  ]
-}
+{}
