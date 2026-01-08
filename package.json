@@ -2,7 +2,6 @@
   "name": "ultravox-trigger",
   "version": "1.0.0",
   "description": "Simple auth page with webhook receiver",
-  "main": "server.js",
   "scripts": {
     "start": "node server.local.js"
   },
