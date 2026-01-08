@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Debt Collection - Authentication</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 25px 30px 30px 30px;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .nectortech-logo {
+            width: 200px;
+            height: auto;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .error {
+            color: #e74c3c;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .success-container {
+            text-align: center;
+        }
+
+        .success-title {
+            font-size: 24px;
+            color: #27ae60;
+            margin-bottom: 20px;
+        }
+
+        .small-text {
+            color: #000;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        .start-calls-btn {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            font-size: 18px;
+            padding: 15px 30px;
+            margin-top: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Agent Selection Styles */
+        .agent-selection {
+            text-align: center;
+        }
+
+        .agent-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .agent-option {
+            padding: 20px;
+            border: 3px solid #e1e5e9;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+            position: relative;
+        }
+
+        .agent-option:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .agent-option.selected {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        }
+
+        .agent-option.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .agent-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .agent-number {
+            font-size: 14px;
+            color: #888;
+        }
+
+        .proceed-btn {
+            margin-top: 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .proceed-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 15px 25px 15px;
+                margin: 10px;
+            }
+
+            .nectortech-logo {
+                width: 170px;
+            }
+
+            .logo {
+                font-size: 24px;
+                margin-bottom: 25px;
+            }
+
+            input, .btn {
+                padding: 14px 16px;
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+        }
+
+        /* Tablet and small desktop */
+        @media (min-width: 481px) and (max-width: 768px) {
+            .container {
+                max-width: 450px;
+                padding: 30px 35px 35px 35px;
+            }
+        }
+
+        /* Large screens */
+        @media (min-width: 1200px) {
+            .container {
+                max-width: 500px;
+                padding: 35px 40px 40px 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Form -->
+        <div id="loginForm">
+            <img src="nectortech.svg" alt="NectorTech" class="nectortech-logo">
+            <div class="logo">AI Debt Collection</div>
+            
+            <form id="authForm">
+                <div class="form-group">
+                    <label for="userId">User ID</label>
+                    <input type="text" id="userId" name="userId" required autocomplete="username">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required autocomplete="current-password">
+                </div>
+                
+                <button type="submit" class="btn">Login</button>
+                <div id="errorMessage" class="error hidden"></div>
+            </form>
+        </div>
+
+        <!-- Agent Selection Page -->
+        <div id="agentSelection" class="agent-selection hidden">
+            <img src="nectortech.svg" alt="NectorTech" class="nectortech-logo">
+            <div class="logo">Choose Your Agent</div>
+            
+            <div class="agent-options">
+                <div class="agent-option" data-agent="debt" onclick="selectAgent('debt')">
+                    <div class="agent-number">Option 1</div>
+                    <div class="agent-title">Debt Collector</div>
+                </div>
+                
+                <div class="agent-option" data-agent="sales" onclick="selectAgent('sales')">
+                    <div class="agent-number">Option 2</div>
+                    <div class="agent-title">Sales Agent</div>
+                </div>
+            </div>
+            
+            <button id="proceedBtn" class="btn proceed-btn" disabled onclick="proceedWithAgent()">Proceed</button>
+        </div>
+
+        <!-- Success Page -->
+        <div id="successPage" class="success-container hidden">
+            <img src="nectortech.svg" alt="NectorTech" class="nectortech-logo">
+            <div class="logo">AI Debt Collection</div>
+            <div id="successTitle" class="success-title">✓ Authentication Successful</div>
+            <p id="welcomeText">Welcome, huzefa!</p>
+            <button id="startCallsBtn" class="btn start-calls-btn" onclick="startCalls()">Start Calls</button>
+            <p id="testAgain" class="small-text hidden">Test Again</p>
+            <p id="statusLine" class="small-text hidden"></p>
+        </div>
+    </div>
+
+    <script>
+        // Authentication credentials
+        const VALID_CREDENTIALS = {
+            id: 'huzefa',
+            password: 'ping2025'
+        };
+
+        // Track selected agent
+        let selectedAgent = null;
+
+        // Get form elements
+        const authForm = document.getElementById('authForm');
+        const loginForm = document.getElementById('loginForm');
+        const agentSelection = document.getElementById('agentSelection');
+        const successPage = document.getElementById('successPage');
+        const errorMessage = document.getElementById('errorMessage');
+        const userIdInput = document.getElementById('userId');
+        const passwordInput = document.getElementById('password');
+
+        // Handle form submission
+        authForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const enteredId = userIdInput.value.trim();
+            const enteredPassword = passwordInput.value;
+            
+            // Clear previous error
+            showError('');
+            
+            // Validate credentials
+            if (enteredId === VALID_CREDENTIALS.id && enteredPassword === VALID_CREDENTIALS.password) {
+                // Successful authentication - show agent selection
+                loginForm.classList.add('hidden');
+                agentSelection.classList.remove('hidden');
+            } else {
+                // Show error message
+                showError('Invalid credentials. Please try again.');
+                passwordInput.value = ''; // Clear password field
+            }
+        });
+
+        // Select agent function
+        function selectAgent(agentType) {
+            selectedAgent = agentType;
+            
+            // Remove selected class from all options
+            document.querySelectorAll('.agent-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Add selected class to chosen option
+            const selectedOption = document.querySelector(`.agent-option[data-agent="${agentType}"]`);
+            if (selectedOption) {
+                selectedOption.classList.add('selected');
+            }
+            
+            // Enable proceed button
+            document.getElementById('proceedBtn').disabled = false;
+        }
+
+        // Proceed with selected agent
+        function proceedWithAgent() {
+            if (!selectedAgent) return;
+            
+            // Hide agent selection and show success page
+            agentSelection.classList.add('hidden');
+            successPage.classList.remove('hidden');
+            
+            // Update welcome text based on agent
+            const welcomeText = document.getElementById('welcomeText');
+            if (selectedAgent === 'debt') {
+                welcomeText.textContent = 'Welcome, huzefa! (Debt Collector Mode)';
+            } else if (selectedAgent === 'sales') {
+                welcomeText.textContent = 'Welcome, huzefa! (Sales Agent Mode)';
+            }
+        }
+
+        // Show error message
+        function showError(message) {
+            if (message) {
+                errorMessage.textContent = message;
+                errorMessage.classList.remove('hidden');
+            } else {
+                errorMessage.classList.add('hidden');
+            }
+        }
+
+        // Start calls function — POST to webhook and remove button on success
+        const WEBHOOK_URL_DEBT = 'https://rushil-bhor.app.n8n.cloud/webhook/startcall';
+        const WEBHOOK_URL_SALES = 'https://rushil-bhor.app.n8n.cloud/webhook/salesaicall';
+
+        async function startCalls() {
+            const btn = document.getElementById('startCallsBtn');
+            const title = document.getElementById('successTitle');
+            const welcome = document.getElementById('welcomeText');
+            const testAgain = document.getElementById('testAgain');
+
+            if (!btn) return;
+
+            // Prevent double clicks
+            if (btn.disabled) return;
+
+            btn.disabled = true;
+            btn.style.pointerEvents = 'none';
+            const originalBtnText = btn.textContent;
+            btn.textContent = 'Starting...';
+            if (testAgain) testAgain.classList.add('hidden');
+
+            // Determine which webhook and status endpoints to use based on agent type
+            const webhookUrl = selectedAgent === 'sales' ? WEBHOOK_URL_SALES : WEBHOOK_URL_DEBT;
+            const statusEndpoint = selectedAgent === 'sales' ? '/api/status-sales.js' : '/api/status.js';
+            const resetEndpoint = selectedAgent === 'sales' ? '/api/reset-sales.js' : '/api/reset.js';
+
+            try {
+                // Clear persisted completion state before starting
+                try {
+                    await fetch(resetEndpoint, { method: 'POST' });
+                    console.log(`Cleared server-side completion flag for ${selectedAgent}`);
+                } catch (e) {
+                    console.warn('Failed to clear server-side flag', e);
+                }
+
+                // Send to external webhook (simpler flow)
+                const resp = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ trigger: 'start' })
+                });
+
+                if (!resp.ok) throw new Error('Network response was not OK (' + resp.status + ')');
+
+                const data = await resp.json();
+
+                if (data && data.message && data.message.toLowerCase().includes('workflow was started')) {
+                    // Update UI to show system started and remove the button immediately
+                    const agentLabel = selectedAgent === 'sales' ? 'Sales' : 'Debt Collection';
+                    title.textContent = `System has started the ${agentLabel} calls`;
+                    welcome.textContent = 'Calls are running...';
+                    btn.remove();
+
+                    // Start polling our status endpoint for global completion (no runId)
+                    const pollInterval = 2000; // ms
+                    let pollId = null;
+
+                    const poll = async () => {
+                        try {
+                            const sresp = await fetch(statusEndpoint);
+                            if (!sresp.ok) throw new Error('Status fetch failed: ' + sresp.status);
+                            const sdata = await sresp.json();
+                            console.log(`[poll] ${statusEndpoint} ->`, sdata);
+                            // update visible status for debugging
+                            const statusLine = document.getElementById('statusLine');
+                            if (statusLine) {
+                                statusLine.textContent = `Status: ${sdata.status} @ ${new Date().toLocaleTimeString()}`;
+                                statusLine.classList.remove('hidden');
+                            }
+
+                            if (sdata && sdata.status === 'complete') {
+                                // show completion message and recreate button
+                                title.textContent = 'Calls have been made';
+                                welcome.textContent = '';
+                                if (testAgain) {
+                                    testAgain.textContent = 'Test Again';
+                                    testAgain.classList.remove('hidden');
+                                }
+
+                                // recreate Start Calls button
+                                const successPage = document.getElementById('successPage');
+                                const newBtn = document.createElement('button');
+                                newBtn.id = 'startCallsBtn';
+                                newBtn.className = 'btn start-calls-btn';
+                                newBtn.textContent = 'Start Calls';
+                                newBtn.onclick = startCalls;
+                                successPage.appendChild(newBtn);
+
+                                if (pollId) clearInterval(pollId);
+                            }
+                        } catch (err) {
+                            console.error('Polling error', err);
+                        }
+                    };
+
+                    // start immediate poll and then interval
+                    await poll();
+                    pollId = setInterval(poll, pollInterval);
+                } else {
+                    throw new Error('Unexpected response from webhook');
+                }
+            } catch (err) {
+                alert('Failed to start calls: ' + err.message);
+                // Re-enable button so user can try again
+                btn.disabled = false;
+                btn.style.pointerEvents = '';
+                btn.textContent = originalBtnText;
+            }
+        }
+
+        // Focus on first input when page loads
+        window.addEventListener('load', function() {
+            userIdInput.focus();
+        });
+
+        // Handle Enter key in password field
+        passwordInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                authForm.dispatchEvent(new Event('submit'));
+            }
+        });
+
+        // Connect to server-sent events to receive "calls complete" notifications
+        (function setupSSE() {
+            const es = new EventSource('/events');
+
+            es.addEventListener('callsComplete', function(e) {
+                try {
+                    const data = JSON.parse(e.data);
+                    if (data && data.message && data.message === 'Calling complete') {
+                        // Update UI to show calls are done and restore Start Calls button
+                        const title = document.getElementById('successTitle');
+                        const welcome = document.getElementById('welcomeText');
+                        title.textContent = 'Calls have been done';
+                        welcome.textContent = '';
+
+                        const testAgain = document.getElementById('testAgain');
+                        if (testAgain) {
+                            testAgain.textContent = 'Test Again';
+                            testAgain.classList.remove('hidden');
+                        }
+                        const statusLine = document.getElementById('statusLine');
+                        if (statusLine) {
+                            statusLine.textContent = `Status: complete @ ${new Date().toLocaleTimeString()}`;
+                            statusLine.classList.remove('hidden');
+                        }
+
+                        // If button is missing, recreate it
+                        const existing = document.getElementById('startCallsBtn');
+                        if (!existing) {
+                            const btn = document.createElement('button');
+                            btn.id = 'startCallsBtn';
+                            btn.className = 'btn start-calls-btn';
+                            btn.textContent = 'Start Calls';
+                            btn.onclick = startCalls;
+                            const successPage = document.getElementById('successPage');
+                            successPage.appendChild(btn);
+                        }
+                    }
+                } catch (err) {
+                    console.error('Bad SSE data', err);
+                }
+            });
+
+            es.addEventListener('ping', function() {
+                // noop - keeps connection alive
+            });
+        })();
+    </script>
+</body>
+</html>
